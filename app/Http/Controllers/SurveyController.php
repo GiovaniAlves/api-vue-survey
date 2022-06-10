@@ -16,6 +16,7 @@ use Illuminate\Validation\Rule;
 
 class SurveyController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -77,6 +78,18 @@ class SurveyController extends Controller
             return abort('403', 'Unauthorized action');
         }
 
+        return response(new SurveyResource($survey), 200);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param \App\Models\Survey $survey
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function showForGuest(Survey $survey)
+    {
         return response(new SurveyResource($survey), 200);
     }
 
@@ -232,6 +245,11 @@ class SurveyController extends Controller
         return $relativePath;
     }
 
+    /**
+     * @param mixed $question
+     * @return mixed
+     * @throws \Illuminate\Validation\ValidationException
+     */
     private function createQuestion(mixed $question)
     {
         if (is_array($question['data'])) {
@@ -256,6 +274,12 @@ class SurveyController extends Controller
         return SurveyQuestion::create($validator->validated());
     }
 
+    /**
+     * @param SurveyQuestion $question
+     * @param mixed $data
+     * @return bool
+     * @throws \Illuminate\Validation\ValidationException
+     */
     private function updateQuestion(SurveyQuestion $question, mixed $data)
     {
         if (is_array($data['data'])) {

@@ -19,7 +19,7 @@ class SurveyQuestionResource extends JsonResource
             'question' => $this->question,
             'type' => $this->type,
             'description' => $this->description,
-            //has transformed em array because in database he was saved as json
+            //with json_decode i'm transforming em array why in database he was saved as json.
             'data' => json_decode($this->data)
         ];
     }
