@@ -15,7 +15,7 @@ class UpdateSurveyRequest extends FormRequest
     {
         //through this method is given the survey
         $survey = $this->route('survey');
-        if ($this->user()->id === $survey->user_id) {
+        if ($this->user()->id == $survey->user_id) {
             return true;
         }
 
