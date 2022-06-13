@@ -20,6 +20,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 //In the last parameter the route specified which will have to be searched by slug, because the default is 'Id'
 Route::get('/survey-by-slug/{survey:slug}', [SurveyController::class, 'showForGuest']);
+Route::post('/survey/{survey}/answer', [SurveyController::class, 'storeAnswers']);
 
 Route::group([
     'prefix' => 'auth',

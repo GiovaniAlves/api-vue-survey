@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreSurveyAnswersRequest;
 use App\Http\Resources\SurveyResource;
 use App\Models\Survey;
 use App\Http\Requests\StoreSurveyRequest;
 use App\Http\Requests\UpdateSurveyRequest;
+use App\Models\SurveyAnswer;
 use App\Models\SurveyQuestion;
+use App\Models\SurveyQuestionAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
@@ -91,6 +94,40 @@ class SurveyController extends Controller
     public function showForGuest(Survey $survey)
     {
         return response(new SurveyResource($survey), 200);
+    }
+
+    /**
+     * @param Survey $survey
+     * @param StoreSurveyAnswersRequest $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function storeAnswers(Survey $survey, StoreSurveyAnswersRequest $request)
+    {
+        $dataValidated = $request->validated();
+
+        $surveyAnswer = SurveyAnswer::create([
+            "survey_id" => $survey->id,
+            "start_date" => date('Y-m-d H:i:s'),
+            "end_date" => date('Y-m-d H:i:s'),
+        ]);
+
+        foreach ($dataValidated['answers'] as $questionId => $answer) {
+            $surveyQuestion = SurveyQuestion::where(['id' => $questionId, 'survey_id' => $survey->id])->get();
+
+            if (!$surveyQuestion) {
+                return response("This question not belong this survey!", 400);
+            }
+
+            $data = [
+                "answer" => is_array($answer) ? json_encode($answer) : $answer,
+                "survey_question_id" => $questionId,
+                "survey_answer_id" => $surveyAnswer->id
+            ];
+
+            SurveyQuestionAnswer::create($data);
+        }
+
+        return response('', 201);
     }
 
     /**
