@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSurveyAnswersRequest;
+use App\Http\Resources\SurveyQuestionAnswersResource;
+use App\Http\Resources\SurveyQuestionResource;
 use App\Http\Resources\SurveyResource;
 use App\Models\Survey;
 use App\Http\Requests\StoreSurveyRequest;
@@ -345,5 +347,14 @@ class SurveyController extends Controller
         ]);
 
         return $question->update($validator->validated());
+    }
+
+    public function getQuestionAnswer(Request $request)
+    {
+        $lastAnswer = SurveyAnswer::get()->last()->id;
+
+        $answerQuestions = SurveyQuestionAnswersResource::collection(SurveyQuestionAnswer::where('survey_answer_id', '=', $lastAnswer)->get());
+
+        return response($answerQuestions, 200);
     }
 }

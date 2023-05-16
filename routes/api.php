@@ -32,6 +32,8 @@ Route::group([
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/me', [AuthController::class, 'me']);
 
+    Route::get('/survey/get-question-answer', [SurveyController::class, 'getQuestionAnswer']);
     Route::resource('/survey', SurveyController::class);
+
     Route::get('/dashboard', [DashboardController::class, 'reports']);
 });
